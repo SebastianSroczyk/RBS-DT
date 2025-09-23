@@ -416,3 +416,5 @@ FodyWeavers.xsd
 *.msix
 *.msm
 *.msp
+/SFML-3.0.0
+/TBSGame/SFML-3.0.0
