@@ -40,20 +40,19 @@ void RBS_Reasoner::Think()
 		// 
 		//  If a rule's conditions are all met, then it may be selected
 	
+		bool optionPossible = false;
 
-	
+		for (auto considieation : ruleList) {
 
+			optionPossible = considieation->Calculate(*actorBlackboard);
+			if (optionPossible == false) break;
+		}
+		// TASK TODO - By the end of the function,  'selectedOption' should be set to the option that is to be Fired
+		// (the Firing will happen automatically later)
 
-
-
+		if (optionPossible == true) selectedOption = option;
 	}
 
-
-
-
-
-	// TASK TODO - By the end of the function,  'selectedOption' should be set to the option that is to be Fired
-	// (the Firing will happen automatically later)
 
 
 }

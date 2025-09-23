@@ -49,9 +49,25 @@ void AIConstructor_RBS::DefineActions()
 
 	// TASK TODO - add any more Actions you need below
 
+	auto moveAwayFunction = [](AIBrainBlackboardBase& bb) -> ActionStatus {
+		AIActor_Unit* actor = static_cast<AIActor_Unit*>(bb.GetActorContext());
 
+		actor->MoveAwayFromClosestEnemy();
 
+		return ActionStatus::ACTION_SUCCESS;
+		};
 
+	AddActionByName("ActionMoveAway", moveAwayFunction);
+
+	auto moveCloserFunction = [](AIBrainBlackboardBase& bb) -> ActionStatus {
+		AIActor_Unit* actor = static_cast<AIActor_Unit*>(bb.GetActorContext());
+
+		actor->MoveToClosestEnemy();
+
+		return ActionStatus::ACTION_SUCCESS;
+		};
+
+	AddActionByName("ActionMoveCloser", moveCloserFunction);
 }
 
 
@@ -65,7 +81,7 @@ void AIConstructor_RBS::DefineConsiderations()
 	// Consideration - Is there an enemy within 1 tile?
 	auto cEnemyNear = [](AIBrainBlackboardBase& bb) -> bool {
 
-		bool enemyNear = (bb.GetValue("NearestEnemyDist") ==1);
+		bool enemyNear = (bb.GetValue("NearestEnemyDist") == 1);
 		return(enemyNear);
 
 		};
@@ -74,9 +90,31 @@ void AIConstructor_RBS::DefineConsiderations()
 	AddConsiderationByName("ConsiderationEnemyNear", cEnemyNear);
 
 
+	auto cEnemyIsNotNear = [](AIBrainBlackboardBase& bb) -> bool {
+
+		bool enemyNotNear = (bb.GetValue("NearestEnemyDist") > 1);
+		return(enemyNotNear);
+		};
+
+	AddConsiderationByName("ConsiderationEnemyIsNotNear", cEnemyIsNotNear);
+
 	// TASK TODO - add more Considerations below
 
+	auto cLowHP = [](AIBrainBlackboardBase& bb) -> bool {
+		
+		bool lowHP = (bb.GetValue("NearestEnemyHealth") > bb.GetValue("Health") && bb.GetValue("NearestEnemyDist") == 1);
+		return (lowHP);
+		};
 
+	AddConsiderationByName("ConsiderationLowHealth", cLowHP);
+
+
+	auto cEnemyLowHP = [](AIBrainBlackboardBase& bb) -> bool {
+		
+		bool enemyLowHP = (bb.GetValue("NearestEnemyHealth") < bb.GetValue("Health") && bb.GetValue("NearestEnemyDist") > 1);
+		return (enemyLowHP);
+		};
+	AddConsiderationByName("ConsiderationEnemyLowHeath", cEnemyLowHP);
 }
 
 
@@ -89,11 +127,16 @@ void AIConstructor_RBS::DefineOptions()
 	// TASK TODO - add any additional Options you need to create, linking them with an Action
 	AddOptionByName("OptionAttackRanged", "ActionAttackRanged");
 	AddOptionByName("OptionAttackMelee", "ActionAttackMelee");
-
-
+	AddOptionByName("OptionMoveAway", "ActionMoveAway");
+	AddOptionByName("OptionMoveCloser", "ActionMoveCloser");
 
 	// TASK TODO - add Considerations to Options by calling 'AddOptionConsideration()'
 	// Options will only be selected if the Condition is true
+	AddOptionConsideration("OptionAttackRanged", "ConsiderationEnemyIsNotNear");
+	AddOptionConsideration("OptionAttackMelee" , "ConsiderationEnemyNear");
+	AddOptionConsideration("OptionMoveAway" , "ConsiderationLowHealth");
+	AddOptionConsideration("OptionMoveCloser" , "ConsiderationEnemyLowHeath");
+	
 
 
 
