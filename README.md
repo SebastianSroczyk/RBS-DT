@@ -1,4 +1,4 @@
 # RBS-DT
-Week 2 of CMP304 AI - Rule Bases Systems and Decision Trees.
+Week 2 of CMP304 AI - Rule Bases Systems and Decision Trees(Working Progress).
 Name: Sebastian Sroczyk
 Student ID: 2403259
